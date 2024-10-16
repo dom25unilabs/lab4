@@ -1,8 +1,8 @@
 #include <iostream>
+#include <iomanip>
 #include <io.h>
 #include <fcntl.h>
-
-static void mul_mat(int n, int m, int k, const double* const mat1, const double* const mat2, double* const res)
+static void mul_mat(const int n, const int m, const int k, const double* const mat1, const double* const mat2, double* const res)
 {
 	for (int i = 0; i < m; i++)
 	{
@@ -16,23 +16,47 @@ static void mul_mat(int n, int m, int k, const double* const mat1, const double*
 		}
 	}
 }
-
-static void out_mat(int n, int m, double* mat)
+static void out_mat(const int n, const int m, const double* const mat)
 {
+	int maxlen = INT32_MIN;
+	for (int i = 0; i < n * m; i++)
+	{
+		int len = std::snprintf(nullptr, 0, "%.2f", mat[i]);
+		if (len > maxlen)
+		{
+			maxlen = len;
+		}
+	}
+	const int ALIGN_W = maxlen;
+	std::wcout << '|';
 	for (int i = 0; i < n; i++)
 	{
 		for (int j = 0; j < m; j++)
 		{
-			std::wcout << mat[i * m + j];
-			if (j >= m - 1)
+			if (j < m - 1)
 			{
-				std::wcout << '\n';
+				std::wcout << std::left << std::setw(ALIGN_W) << std::setfill(L' ') << mat[i * m + j];
 			}
 			else
 			{
-				std::wcout << ' ';
+				std::wcout << mat[i * m + j] << "|\n";
+				if (i < n - 1)
+				{
+					std::wcout << "|";
+				}
 			}
 		}
+	}
+}
+static void out_mat_autoui(const int n, const int m, const double* const mat)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m - 1; j++)
+		{
+			std::wcout << mat[i * m + j] << ' ';
+		}
+		std::wcout << mat[i * m + m - 1] << '\n';
 	}
 }
 int wmain(int argc, wchar_t* argv[])
@@ -61,7 +85,14 @@ int wmain(int argc, wchar_t* argv[])
 			break;
 		case 1:
 		{
-			out_mat(n, m, a1);
+			if (autoui)
+			{
+				out_mat_autoui(n, m, a1);
+			}
+			else
+			{
+				out_mat(n, m, a1);
+			}
 			break;
 		}
 		case 2:
