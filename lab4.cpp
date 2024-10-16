@@ -113,9 +113,9 @@ int wmain(int argc, wchar_t* argv[])
 		}
 		case 3:
 		{
-			std::wcin >> k;
 			if (n == m)
 			{
+				std::wcin >> k;
 				double* res1 = new double[n * n] {};
 				double* res2 = new double[n * n] {};
 				mul_mat(n, n, n, a1, a1, res1);
