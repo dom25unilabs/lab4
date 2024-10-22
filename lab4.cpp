@@ -16,7 +16,7 @@ static void mul_mat(const int n, const int m, const int k, const double* const m
 		}
 	}
 }
-static void pow_mat(const int n,const int k, const double* const mat, double* const res1, double* const res2)
+static void pow_mat(const int n, const int k, const double* const mat, double* res1, double* res2)
 {
 	mul_mat(n, n, n, mat, mat, res1);
 	for (int i = 1; i < k - 1; i++)
@@ -29,6 +29,13 @@ static void pow_mat(const int n,const int k, const double* const mat, double* co
 		{
 			mul_mat(n, n, n, res2, mat, res1);
 		}
+	}
+	if (k % 2)
+	{
+		double* tmp;
+		tmp = res1;
+		res1 = res2;
+		res2 = tmp;
 	}
 }
 static void out_mat(const int n, const int m, const double* const mat)
@@ -74,7 +81,7 @@ static void out_mat_autoui(const int n, const int m, const double* const mat)
 		std::wcout << mat[i * m + m - 1] << '\n';
 	}
 }
-static void in_mat(const int n, const int m, double* const mat) 
+static void in_mat(const int n, const int m, double* const mat)
 {
 	for (int i = 0; i < n * m; i++)
 	{
@@ -134,18 +141,10 @@ int wmain(int argc, wchar_t* argv[])
 				std::wcin >> k;
 				double* res1 = new double[n * n] {};
 				double* res2 = new double[n * n] {};
-				pow_mat(n,k,a1,res1,res2);
+				pow_mat(n, k, a1, res1, res2);
 				delete[] a1;
-				if (k % 2)
-				{
-					a1 = res2;
-					delete[] res1;
-				}
-				else
-				{
-					a1 = res1;
-					delete[] res2;
-				}
+				a1 = res2;
+				delete[] res1;
 			}
 			else
 			{
